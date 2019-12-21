@@ -14360,6 +14360,178 @@ Misclassification error for validation data set is  0.42666666666666664
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Feedforward-neural-network-with-ReLU">Feedforward neural network with ReLU<a class="anchor-link" href="#Feedforward-neural-network-with-ReLU">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[102]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot; feedforward neural network &quot;&quot;&quot;</span>
+<span class="k">class</span> <span class="nc">Linear</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_size</span><span class="p">,</span> <span class="n">out_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">in_size</span><span class="p">,</span> <span class="n">out_size</span><span class="p">)</span><span class="o">*</span><span class="mf">0.01</span>  <span class="c1"># operands could not be broadcast together with shapes (42000,10) (42000,1024) </span>
+        <span class="c1"># self.W = np.random.randn(out_size, in_size)*0.01  # shapes (42000,1024) and (10,1024) not aligned: 1024 (dim 1) != 10 (dim 0)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_size</span><span class="p">))</span>
+        <span class="c1"># self.b = np.zeros((out_size, 1))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+        <span class="k">return</span> <span class="n">rectified</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    
+<span class="c1"># rectified linear function</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ReLU:</span>
+<span class="sd">Return 0, if value is less than 0, else return value.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">rectified</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[103]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lin</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">lin</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(42000, 10)
+(42000, 10)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[104]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[104]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(42000, 10)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[105]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[105]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[0.        , 0.        , 0.        , 0.        , 0.0393981 ,
+        0.        , 0.        , 0.03439608, 0.05084044, 0.11331949],
+       [0.02298131, 0.        , 0.00946889, 0.03769892, 0.16113388,
+        0.        , 0.        , 0.01813756, 0.14041236, 0.07567289],
+       [0.        , 0.        , 0.        , 0.04171818, 0.14593541,
+        0.        , 0.        , 0.00588732, 0.12943746, 0.09392184],
+       [0.        , 0.        , 0.        , 0.12238786, 0.24270538,
+        0.        , 0.        , 0.02551613, 0.19323399, 0.18078864],
+       [0.        , 0.        , 0.00176788, 0.23489652, 0.19541208,
+        0.        , 0.        , 0.        , 0.16371649, 0.18789719],
+       [0.        , 0.        , 0.03260441, 0.29011677, 0.26218802,
+        0.        , 0.        , 0.05002999, 0.1099322 , 0.1235025 ],
+       [0.03081626, 0.        , 0.04166429, 0.10432601, 0.24329282,
+        0.        , 0.        , 0.        , 0.07081777, 0.00963145],
+       [0.        , 0.        , 0.        , 0.14404729, 0.26127829,
+        0.        , 0.        , 0.02042981, 0.35627507, 0.26558236],
+       [0.        , 0.        , 0.        , 0.00943106, 0.09831053,
+        0.        , 0.        , 0.02314046, 0.07442247, 0.01675621],
+       [0.        , 0.        , 0.        , 0.02806143, 0.10098866,
+        0.        , 0.        , 0.07850648, 0.03899394, 0.04458831]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="1-pass-neural-network">1 pass neural network<a class="anchor-link" href="#1-pass-neural-network">&#182;</a></h4>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
